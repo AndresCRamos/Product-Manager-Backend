@@ -7,9 +7,9 @@ from app.models.vehicle.models import Vehicle
 class Delivery(models.Model):
 
     class StateChoices(models.TextChoices):
-        PACKAGING = 'Packaging', 'Empacando'
+        PACKAGING = 'Pack', 'Empacando'
         SENT = 'Sent', 'Enviado'
-        DELIVERED = 'Delivered', 'Entregado'
+        DELIVERED = 'Del', 'Entregado'
 
     order = models.OneToOneField(Order, on_delete=models.CASCADE)
     status = models.CharField(
