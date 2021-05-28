@@ -40,6 +40,30 @@ BASE_APPS = [
     'django.contrib.staticfiles',
 ]
 
+LOCAL_APPS = [
+    'models.canceled_order',
+    'models.client',
+    'models.conveyor',
+    'models.delivery',
+    'models.employee',
+    'models.order',
+    'models.ordered_product',
+    'models.product',
+    'models.purchase',
+    'models.purchase_on_credit',
+    'models.purchased_product',
+    'models.seller',
+    'models.supplier',
+    'models.vehicle',
+    'models.zone',
+]
+
+THIRD_APPS = [
+    'rest_framework',
+]
+
+INSTALLED_APPS = BASE_APPS+LOCAL_APPS+THIRD_APPS
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -50,15 +74,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-LOCAL_APPS = [
-
-]
-
-THRID_APPS = [
-    'rest_framework',
-]
-
-INSTALLED_APPS = BASE_APPS+LOCAL_APPS+THRID_APPS
 
 ROOT_URLCONF = 'app.urls'
 

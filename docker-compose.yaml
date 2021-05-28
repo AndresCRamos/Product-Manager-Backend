@@ -18,7 +18,9 @@ services:
     container_name: 'back'
     ports:
     - 8000:8000
-    command: ['bash', 'entrypoint.sh']
+    volumes:
+    - ./app:/code/app
+    entrypoint: ['bash', 'entrypoint.sh']
     depends_on:
       - db
 
