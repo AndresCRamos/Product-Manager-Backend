@@ -1,5 +1,5 @@
 from django.db import models
-from app.models.order.models import Order
+from ..order.models import Order
 
 
 class CanceledOrder(models.Model):
