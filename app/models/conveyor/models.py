@@ -1,6 +1,6 @@
 from django.db import models
-from app.models.employee.models import Employee
-from app.models.zone.models import Zone
+from ..employee.models import Employee
+from ..zone.models import Zone
 
 
 class Conveyor(models.Model):

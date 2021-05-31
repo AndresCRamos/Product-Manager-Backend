@@ -1,7 +1,7 @@
 from django.db import models
-from app.models.order.models import Order
-from app.models.conveyor.models import Conveyor
-from app.models.vehicle.models import Vehicle
+from ..order.models import Order
+from ..conveyor.models import Conveyor
+from ..vehicle.models import Vehicle
 
 
 class Delivery(models.Model):

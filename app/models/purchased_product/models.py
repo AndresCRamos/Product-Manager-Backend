@@ -1,6 +1,7 @@
 from django.db import models
-from app.models.purchase.models import Purchase
-from app.models.product.models import Product
+from ..purchase.models import Purchase
+from ..product.models import Product
+
 
 class PurchasedProduct(models.Model):
     quantity = models.IntegerField(default=1)

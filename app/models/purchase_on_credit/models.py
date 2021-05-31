@@ -1,5 +1,5 @@
 from django.db import models
-from app.models.purchase.models import Purchase
+from ..purchase.models import Purchase
 
 
 class PurchaseOnCredit(models.Model):

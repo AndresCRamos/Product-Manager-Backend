@@ -1,5 +1,5 @@
 from django.db import models
-from app.models.zone.models import Zone
+from ..zone.models import Zone
 
 
 class Client(models.Model):
