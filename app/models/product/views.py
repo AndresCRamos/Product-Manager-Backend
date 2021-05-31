@@ -2,12 +2,12 @@ from rest_framework.views import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from .serializers import ProductListSerializer,  ProductDetailSerializer
-from .models import Product
+from .models import Product, ProductSupplier
 
 
 class ProductApiView(APIView):
     def get(self, request):
-        products = Product.objects.all()
+        products = ProductSupplier.objects.all()
         serializer = ProductListSerializer(products, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -20,7 +20,7 @@ class ProductApiView(APIView):
 
 
 class ProductDetailedAPIView(APIView):
-    def get(self, pk, request):
+    def get(self, request, pk):
         product = Product.objects.filter(id=pk).first()
         if product:
             serializer = ProductDetailSerializer(product)
