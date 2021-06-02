@@ -33,4 +33,3 @@ class ProductSupplier(ViewTable):
               "join supplier_supplier ss " \
               "ON pp.supplier_id = ss.id"
         return sql
-
