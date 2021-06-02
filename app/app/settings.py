@@ -58,7 +58,6 @@ LOCAL_APPS = [
     'models.zone',
 ]
 
-# noinspection PyUnresolvedReferences
 THIRD_APPS = [
     'rest_framework',
     'view_table',
