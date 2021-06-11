@@ -1,5 +1,14 @@
-echo "sleep"
-sleep 10
+echo "wait for database"
+nc -z db 5432
+x=$?
+while [ $x -ne 0 ]
+do
+  echo "waiting for db"
+  nc -z db 5432>/dev/null
+  x=$?
+  sleep 1
+done
+echo "found db"
 
 echo "activate venv"
 source venv/bin/activate
