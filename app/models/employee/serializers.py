@@ -6,7 +6,7 @@ from .models import Employee
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'is_staff', 'is_active')
+        fields = ('id', 'username', 'email', 'first_name', 'last_name', 'is_staff')
 
     def create(self, validated_data):
         password = validated_data['password1']

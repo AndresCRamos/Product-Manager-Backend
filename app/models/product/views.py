@@ -3,9 +3,10 @@ from rest_framework import status
 from rest_framework.views import APIView
 from .serializers import ProductListSerializer,  ProductDetailSerializer
 from .models import Product, ProductSupplier
+from ..employee.authentication_mixins import Authentication
 
 
-class ProductApiView(APIView):
+class ProductApiView(Authentication, APIView):
     def get(self, request):
         products = ProductSupplier.objects.all()
         serializer = ProductListSerializer(products, many=True)
