@@ -4,9 +4,9 @@ from view_table.models import ViewTable
 
 
 class EmployeeType(models.TextChoices):
-    CONVEYOR = 'Conveyor', 'Transportador'
-    SELLER = 'Seller', 'Vendedor'
-    ACCOUNTANT = 'Accountant', 'Contador'
+    CONVEYOR = '0', 'Conveyor'
+    SELLER = '1', 'Seller'
+    ACCOUNTANT = '2', 'Accountant'
 
 
 class Employee(models.Model):
@@ -17,7 +17,7 @@ class Employee(models.Model):
     neighborhood = models.CharField(max_length=20, null=False)
     address = models.CharField(max_length=20, null=False)
     type = models.CharField(
-        max_length=20,
+        max_length=2,
         choices=EmployeeType.choices,
         default=EmployeeType.ACCOUNTANT,
         null=False
