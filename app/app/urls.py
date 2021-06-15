@@ -15,15 +15,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from models.employee import views
 
-from models.employee.views import Login, Logout, UserToken
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/products/', include('models.product.urls')),
-    path('api/v1/supplier/', include('models.supplier.urls')),
+    path('api/v1/', include('models.client.urls')),
     path('api/v1/', include('models.employee.urls')),
-    path('', Login.as_view()),
-    path('logout/', Logout.as_view()),
-    path('refresh_token/', UserToken.as_view())
+    path('api/v1/', include('models.product.urls')),
+    path('api/v1/', include('models.supplier.urls')),
+    path('api/v1/', include('models.zone.urls')),
+    path('login/', views.Login.as_view()),
+    path('logout/', views.Logout.as_view()),
+    path('refresh_token/', views.UserToken.as_view())
 ]
