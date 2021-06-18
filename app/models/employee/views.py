@@ -5,8 +5,15 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.viewsets import ModelViewSet
 from .authentication_mixins import Authentication
 from .serializers import EmployeeSerializer, UserSerializer
+
+
+class EmployeeViewSet(ModelViewSet):
+    queryset = EmployeeSerializer.Meta.model.objects.filter(user__is_active=True)
+    serializer_class = EmployeeSerializer
+    tag = ['employee']
 
 
 class EmployeeAPIView(APIView):
@@ -102,10 +109,7 @@ class Login(ObtainAuthToken):
 class Logout(APIView):
     def get(self, request, *args, **kwargs):
         token_sent = request.GET.get('token')
-        print(request.POST)
-        print('sent token: ', token_sent)
         token = Token.objects.filter(key=token_sent).first()
-        print('token: ', token)
         if token:
             user = token.user
             all_sessions = Session.objects.filter(expire_date__gte=datetime.now())
@@ -140,7 +144,7 @@ class UserToken(APIView):
             return Response(
                 {'token': user_token.key}
             )
-        except:
+        except Token.DoesNotExist:
             return Response(
                 {'error': 'Credentials sent not valid'},
                 status=status.HTTP_400_BAD_REQUEST

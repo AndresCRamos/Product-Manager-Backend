@@ -1,4 +1,3 @@
-from django.db.models import Q, F
 from rest_framework.views import Response
 from rest_framework import status
 from rest_framework import viewsets
@@ -6,9 +5,10 @@ from .serializers import ProductListSerializer,  ProductSerializer, ProductDetai
 from ..employee.authentication_mixins import Authentication
 
 
-class ProductViewSet(Authentication, viewsets.ModelViewSet):
+class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     queryset = ProductSerializer.Meta.model.objects.all()
+    tag = ['product']
 
     def list(self, request, *args, **kwargs):
         products = ProductListSerializer.Meta.model.objects.all()

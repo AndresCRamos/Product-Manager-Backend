@@ -8,3 +8,4 @@ from ..employee.authentication_mixins import Authentication
 class ZoneViewSet(viewsets.ModelViewSet):
     serializer_class = ZoneSerializer
     queryset = ZoneSerializer.Meta.model.objects.all()
+    tag = ['zone']

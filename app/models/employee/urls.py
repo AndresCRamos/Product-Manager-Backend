@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import EmployeeAPIView, EmployeeDetailApiView
+from rest_framework.routers import DefaultRouter
+from .views import EmployeeViewSet
 
-urlpatterns = [
-    path('employee/', EmployeeAPIView.as_view()),
-    path('employee/<int:pk>', EmployeeDetailApiView.as_view())
-]
+router = DefaultRouter()
+router.register(r'employee', EmployeeViewSet)
+
+urlpatterns = router.urls

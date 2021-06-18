@@ -7,6 +7,7 @@ from .serializers import ClientSerializer, ClientListSerializer, ClientDetailSer
 class ClientViewSet(viewsets.ModelViewSet):
     queryset = ClientSerializer.Meta.model.objects.all()
     serializer_class = ClientSerializer
+    tag = ['client']
 
     def list(self, request, *args, **kwargs):
         client = self.get_queryset()

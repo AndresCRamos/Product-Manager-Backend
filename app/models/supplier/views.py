@@ -8,3 +8,4 @@ from .serializers import SupplierSerializer
 class SupplierViewSet(ModelViewSet):
     queryset = SupplierSerializer.Meta.model.objects.all()
     serializer_class = SupplierSerializer
+    tag = ['supplier']

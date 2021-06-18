@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 from decouple import config
+from app.custom_schema import CustomAutoSchema
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -59,12 +60,18 @@ LOCAL_APPS = [
 ]
 
 THIRD_APPS = [
+    'drf_yasg',
     'rest_framework',
     'rest_framework.authtoken',
     'view_table',
 ]
 
 INSTALLED_APPS = BASE_APPS+LOCAL_APPS+THIRD_APPS
+
+SWAGGER_SETTINGS = {
+    'DOC_EXPANSION' : 'none',
+    "DEFAULT_AUTO_SCHEMA_CLASS" : "app.custom_schema.CustomAutoSchema",
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
