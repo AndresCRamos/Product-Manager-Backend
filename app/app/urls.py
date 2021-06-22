@@ -19,7 +19,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
-from models.employee import views
+from models.employee import auth
 from models.client.urls import router as client_router
 from models.employee.urls import router as employee_router
 from models.product.urls import router as product_router
@@ -33,7 +33,7 @@ schema_view = get_schema_view(
         description='Product Manager API documentation',
         terms_of_service='',
         contact=openapi.Contact(email='andrecramosr@gmail.com'),
-        license=openapi.License(name='BSD')
+        license=openapi.License(name='None')
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),
@@ -55,9 +55,8 @@ model_url = [
 ]
 
 auth_url = [
-    path(r'login/', views.Login.as_view()),
-    path(r'logout/', views.Logout.as_view()),
-    path(r'refresh_token/', views.UserToken.as_view())
+    path(r'login/', auth.Login.as_view()),
+    path(r'logout/', auth.Logout.as_view()),
 ]
 
 third_party_url = [

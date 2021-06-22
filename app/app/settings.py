@@ -146,7 +146,7 @@ LANGUAGE_CODE = 'en-US'
 
 TIME_ZONE = 'America/Bogota'
 
-TOKEN_EXPIRED_AFTER_SECONDS = 100
+AUTH_USER_MODEL = 'employee.Employee'
 
 USE_I18N = True
 
