@@ -21,6 +21,7 @@ from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from models.employee import auth
 from models.client.urls import router as client_router
+from models.conveyor.urls import router as conveyor_router
 from models.employee.urls import router as employee_router
 from models.product.urls import router as product_router
 from models.supplier.urls import router as supplier_router
@@ -41,6 +42,7 @@ schema_view = get_schema_view(
 
 models_router = DefaultRouter()
 models_router.registry.extend(client_router.registry)
+models_router.registry.extend(conveyor_router.registry)
 models_router.registry.extend(employee_router.registry)
 models_router.registry.extend(product_router.registry)
 models_router.registry.extend(supplier_router.registry)
@@ -57,6 +59,7 @@ model_url = [
 auth_url = [
     path(r'login/', auth.Login.as_view()),
     path(r'logout/', auth.Logout.as_view()),
+    path(r'refresh/', auth.RefreshToken.as_view())
 ]
 
 third_party_url = [
