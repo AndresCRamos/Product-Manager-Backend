@@ -24,7 +24,9 @@ from models.client.urls import router as client_router
 from models.conveyor.urls import router as conveyor_router
 from models.employee.urls import router as employee_router
 from models.product.urls import router as product_router
+from models.seller.urls import router as seller_router
 from models.supplier.urls import router as supplier_router
+from models.vehicle.urls import router as vehicle_router
 from models.zone.urls import router as zone_router
 
 schema_view = get_schema_view(
