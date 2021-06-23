@@ -4,5 +4,5 @@ from ..zone.models import Zone
 
 
 class Seller(models.Model):
-    employee = models.OneToOneField(Employee, on_delete=models.CASCADE, null=False)
+    employee = models.OneToOneField(Employee, on_delete=models.CASCADE, null=False, primary_key=True)
     zone = models.ForeignKey(Zone, on_delete=models.DO_NOTHING, null=False)
