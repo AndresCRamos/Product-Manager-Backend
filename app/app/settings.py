@@ -73,6 +73,8 @@ SWAGGER_SETTINGS = {
     "DEFAULT_AUTO_SCHEMA_CLASS" : "app.custom_schema.CustomAutoSchema",
 }
 
+TOKEN_EXPIRED_AFTER_SECONDS = 900
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
