@@ -23,6 +23,7 @@ from models.employee import auth
 from models.client.urls import router as client_router
 from models.conveyor.urls import router as conveyor_router
 from models.employee.urls import router as employee_router
+from models.order.urls import router as order_router
 from models.product.urls import router as product_router
 from models.seller.urls import router as seller_router
 from models.supplier.urls import router as supplier_router
@@ -46,8 +47,11 @@ models_router = DefaultRouter()
 models_router.registry.extend(client_router.registry)
 models_router.registry.extend(conveyor_router.registry)
 models_router.registry.extend(employee_router.registry)
+models_router.registry.extend(order_router.registry)
 models_router.registry.extend(product_router.registry)
+models_router.registry.extend(seller_router.registry)
 models_router.registry.extend(supplier_router.registry)
+models_router.registry.extend(vehicle_router.registry)
 models_router.registry.extend(zone_router.registry)
 
 base_url = [

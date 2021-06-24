@@ -20,4 +20,4 @@ class Order(models.Model):
         default=StateChoices.WAIT
     )
     seller = models.ForeignKey(Seller, on_delete=models.DO_NOTHING)
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    client = models.ForeignKey(Client, on_delete=models.DO_NOTHING)
