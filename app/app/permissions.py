@@ -1,6 +1,7 @@
 from rest_framework.permissions import BasePermission, SAFE_METHODS
 from models.conveyor.models import Conveyor
 from models.seller.models import Seller
+from models.order.models import Order
 
 
 class HROnly(BasePermission):
@@ -54,8 +55,17 @@ class OwnSellerOnly(BasePermission):
         return False
 
 
-class SellerOnly(BasePermission):
+class ConveyorOrSellerOnly(BasePermission):
     message = 'Must be conveyor or seller to perform this operation'
+
+    def has_permission(self, request, view):
+        if request.user.type in ['Seller', 'Admin', 'Seller']:
+            return True
+        return False
+
+
+class SellerOnly(BasePermission):
+    message = 'Must be seller to perform this operation'
 
     def has_permission(self, request, view):
         if request.user.type in ['Seller', 'Admin']:
@@ -64,7 +74,7 @@ class SellerOnly(BasePermission):
 
 
 class ConveyorOnly(BasePermission):
-    message = 'Must be conveyor or seller to perform this operation'
+    message = 'Must be conveyor to perform this operation'
 
     def has_permission(self, request, view):
         if request.user.type in ['Conveyor', 'Admin']:
@@ -76,7 +86,9 @@ class SameZoneOnly(BasePermission):
     message = 'Must be located in the same zone'
 
     def has_object_permission(self, request, view, obj):
-        zone = obj.zone
+        if not isinstance(obj, (Order, )):
+            return False
+        zone = obj.client.zone
         if request.user.type == 'Admin':
             return True
         if request.user.type == 'Conveyor':
@@ -84,7 +96,7 @@ class SameZoneOnly(BasePermission):
             if conveyor:
                 return True
         elif request.user.type == 'Seller':
-            conveyor = Conveyor.objects.filter(employee=request.user, zone=zone).first()
-            if conveyor:
+            seller = Seller.objects.filter(employee=request.user, zone=zone).first()
+            if seller:
                 return True
         return False
