@@ -18,10 +18,8 @@ class SellerViewSet(ModelViewSet):
         return SellerSerializer
 
     def get_permissions(self):
-        print(self.action)
         if self.action == 'retrieve':
             self.permission_classes = (IsAuthenticated,  OwnSellerOnly, )
         else:
             self.permission_classes = (IsAuthenticated, HROnly, )
-        print(self.permission_classes)
         return super(SellerViewSet, self).get_permissions()

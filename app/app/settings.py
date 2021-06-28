@@ -48,7 +48,6 @@ LOCAL_APPS = [
     'models.delivery',
     'models.employee',
     'models.order',
-    'models.ordered_product',
     'models.product',
     'models.purchase',
     'models.purchase_on_credit',

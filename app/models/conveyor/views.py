@@ -20,10 +20,8 @@ class ConveyorViewSet(ModelViewSet):
         return ConveyorSerializer
 
     def get_permissions(self):
-        print(self.action)
         if self.action == 'retrieve':
             self.permission_classes = (IsAuthenticated,  OwnConveyorOnly, )
         else:
             self.permission_classes = (IsAuthenticated, HROnly, )
-        print(self.permission_classes)
         return super(ConveyorViewSet, self).get_permissions()

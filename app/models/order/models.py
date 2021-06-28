@@ -1,19 +1,18 @@
 from django.db import models
 from ..seller.models import Seller
 from ..client.models import Client
+from ..product.models import Product
 
 
 class Order(models.Model):
-
     class StateChoices(models.TextChoices):
-        WAIT = 'Wait', 'En espera'
-        PACKAGING = 'Packaging', 'Empacando'
-        SENT = 'Sent', 'Enviado'
-        DELIVERED = 'Delivered', 'Entregado'
+        WAIT = 'Wait'
+        PACKAGING = 'Packaging'
+        SENT = 'Sent'
+        DELIVERED = 'Delivered'
 
-    order_date = models.DateField(auto_now=True, auto_now_add=False)
-    deliver_date = models.DateField(auto_now=False, auto_now_add=False, null=False)
-    total_value = models.DecimalField(max_digits=100, decimal_places=2, null=False)
+    order_date = models.DateField(auto_now=True)
+    max_deliver_date = models.DateField(auto_now_add=False)
     state = models.CharField(
         max_length=15,
         choices=StateChoices.choices,
@@ -21,3 +20,9 @@ class Order(models.Model):
     )
     seller = models.ForeignKey(Seller, on_delete=models.DO_NOTHING)
     client = models.ForeignKey(Client, on_delete=models.DO_NOTHING)
+
+
+class OrderedProduct(models.Model):
+    quantity = models.IntegerField()
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
