@@ -26,3 +26,6 @@ class OrderedProduct(models.Model):
     quantity = models.IntegerField()
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        unique_together = [['order', 'product']]

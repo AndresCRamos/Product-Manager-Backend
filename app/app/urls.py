@@ -24,6 +24,7 @@ from models.client.urls import router as client_router
 from models.conveyor.urls import router as conveyor_router
 from models.employee.urls import router as employee_router
 from models.order.urls import router as order_router
+from models.order.urls import ordered_product_router as ordered_product_router
 from models.product.urls import router as product_router
 from models.seller.urls import router as seller_router
 from models.supplier.urls import router as supplier_router
@@ -59,7 +60,8 @@ base_url = [
 ]
 
 model_url = [
-    path(r'api/v1/', include(models_router.urls))
+    path(r'api/v1/', include(models_router.urls)),
+    path(r'api/v1/', include(ordered_product_router.urls))
 ]
 
 auth_url = [

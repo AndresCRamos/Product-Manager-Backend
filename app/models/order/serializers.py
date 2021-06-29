@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from ..seller.serializers import SellerListSerializer
 from ..client.serializers import ClientListSerializer
-from ..product.serializers import ProductSerializer
+from ..product.serializers import ProductListSerializer, ProductDetailSerializer
 from ..order.models import Order, OrderedProduct
 
 
@@ -18,7 +18,7 @@ class OrderListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super(OrderListSerializer, self).to_representation(instance)
-        ordered_products = OrderedProductSerializer.Meta.model.objects.filter(order=instance)
+        ordered_products = OrderedProductListSerializer.Meta.model.objects.filter(order=instance)
         total_price = 0
         for ordered in ordered_products:
             total_price = ordered.quantity * ordered.product.sale_value
@@ -26,18 +26,22 @@ class OrderListSerializer(serializers.ModelSerializer):
         return data
 
 
-class OrderedProductSerializer(serializers.ModelSerializer):
+class OrderedProductListSerializer(serializers.ModelSerializer):
+    product = ProductListSerializer(read_only=True)
+    price = serializers.SerializerMethodField()
+
+    def get_price(self, instance=OrderedProduct):
+        return instance.quantity * instance.product.sale_value
 
     class Meta:
         model = OrderedProduct
-        fields = '__all__'
-        read_only_fields = ['order']
+        exclude = ('id', 'order', )
 
 
 class OrderDetailSerializer(serializers.ModelSerializer):
     seller = SellerListSerializer(read_only=True)
     client = ClientListSerializer(read_only=True)
-    ordered = serializers.ListSerializer(child=OrderedProductSerializer(), write_only=True)
+    ordered = serializers.ListSerializer(child=OrderedProductListSerializer(), write_only=True)
 
     class Meta:
         model = Order
@@ -56,8 +60,8 @@ class OrderDetailSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         data = super(OrderDetailSerializer, self).to_representation(instance)
-        ordered_products = OrderedDetailSerializer(
-            OrderedProductSerializer.Meta.model.objects.filter(order=instance),
+        ordered_products = OrderedProductListSerializer(
+            OrderedProductListSerializer.Meta.model.objects.filter(order=instance),
             many=True).data
         total_price = 0
         for product in ordered_products:
@@ -67,8 +71,8 @@ class OrderDetailSerializer(serializers.ModelSerializer):
         return data
 
 
-class OrderedDetailSerializer(serializers.ModelSerializer):
-    product = ProductSerializer(read_only=True)
+class OrderedProductDetailSerializer(serializers.ModelSerializer):
+    product = ProductDetailSerializer(read_only=True)
     price = serializers.SerializerMethodField()
 
     def get_price(self, instance=OrderedProduct):
@@ -77,3 +81,10 @@ class OrderedDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderedProduct
         exclude = ('order', )
+        read_only_fields = ['id', 'product']
+
+
+class OrderedProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderedProduct
+        fields = '__all__'
