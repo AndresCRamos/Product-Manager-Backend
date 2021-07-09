@@ -1,3 +1,5 @@
+from itertools import product
+
 from rest_framework import status
 from django.shortcuts import render
 from rest_framework.decorators import action
@@ -6,7 +8,9 @@ from rest_framework.exceptions import APIException
 from rest_framework.viewsets import ModelViewSet, ViewSet
 from .serializers import \
     (OrderSerializer, OrderDetailSerializer, OrderListSerializer,
-     OrderedProductSerializer, OrderedProductListSerializer, OrderedProductDetailSerializer)
+     OrderedProductSerializer, OrderedProductListSerializer, OrderedProductDetailSerializer,
+     OrderedProductUpdateSerializer, OrderCreateSerializer
+     )
 
 
 class OrderViewSet(ModelViewSet):
@@ -15,8 +19,10 @@ class OrderViewSet(ModelViewSet):
     def get_serializer_class(self):
         if self.action == 'list':
             return OrderListSerializer
-        if self.action in ['retrieve', 'create']:
+        if self.action in 'retrieve':
             return OrderDetailSerializer
+        if self.action in 'create':
+            return OrderCreateSerializer
         return OrderSerializer
 
 
@@ -28,7 +34,7 @@ class OrderedProductViewSet(ModelViewSet):
         try:
             return OrderSerializer.Meta.model.objects.get(id=order_id)
         except OrderSerializer.Meta.model.DoesNotExist:
-            raise APIException({'error': "such order doesn't exist"})
+            raise APIException({'detail': "such order doesn't exist"})
 
     def get_queryset(self):
         order = self.get_parent()
@@ -39,6 +45,8 @@ class OrderedProductViewSet(ModelViewSet):
             return OrderedProductDetailSerializer
         if self.action == 'list':
             return OrderedProductListSerializer
+        if self.action in ['update', 'partial_update']:
+            return OrderedProductUpdateSerializer
         return OrderedProductSerializer
 
     def create(self, request, *args, **kwargs):
@@ -46,8 +54,8 @@ class OrderedProductViewSet(ModelViewSet):
         data = request.data
         for ordered in data:
             ordered['order'] = order.id
-            print(ordered)
-        serializer = self.get_serializer(data=request.data, many=True)
+        serializer_class = self.get_serializer_class()
+        serializer = serializer_class(data=request.data, many=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
