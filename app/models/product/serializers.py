@@ -4,19 +4,18 @@ from ..supplier.serializers import SupplierSerializer
 
 
 class ProductListSerializer(serializers.ModelSerializer):
+    supplier = serializers.SerializerMethodField('get_supplier', read_only=True)
+
     class Meta:
         model = Product
         fields = ('id', 'name', 'quantity', 'min_quantity', 'supplier')
 
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        supplier = instance.supplier
-        data.update({
-            'supplier_nit': supplier.nit,
-            'supplier_name': supplier.name
-        })
-        return data
-
+    def get_supplier(self, obj: Product):
+        supplier = obj.supplier
+        return {
+            'nit': supplier.nit,
+            'name': supplier.name
+        }
 
 class ProductSerializer(serializers.ModelSerializer):
 

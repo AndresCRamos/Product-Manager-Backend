@@ -5,7 +5,7 @@ from ..zone.serializers import ZoneSerializer
 
 
 class ConveyorListSerializer(serializers.ModelSerializer):
-    employee = EmployeeListSerializer(read_only=True)
+    employee = EmployeeSerializer(read_only=True)
     zone = serializers.SlugRelatedField(
         many=False,
         read_only=True,

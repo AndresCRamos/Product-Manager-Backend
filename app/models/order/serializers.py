@@ -94,9 +94,31 @@ class OrderCreateSerializer(serializers.ModelSerializer):
 
 
 class OrderListSerializer(serializers.ModelSerializer):
+    client = serializers.SerializerMethodField(method_name='get_client', read_only=True)
+    seller = serializers.SerializerMethodField(method_name='get_employee', read_only=True)
+
     class Meta:
         model = Order
         fields = '__all__'
+
+    def get_client(self, obj):
+        client = obj.client
+        return {
+            'name': f'{client.name} {client.last_name}',
+            'zone': f'{client.zone.name}'
+        }
+
+    def get_employee(self, obj: Order):
+        seller = obj.seller
+        employee = seller.employee
+
+        return {
+            'employee': {
+                'name':  f'{employee.first_name} {employee.last_name}',
+                'email': f'{employee.email}'
+            },
+            'zone': seller.zone.name
+        }
 
     def to_representation(self, instance):
         data = super(OrderListSerializer, self).to_representation(instance)

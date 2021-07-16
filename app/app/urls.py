@@ -22,6 +22,7 @@ from drf_yasg import openapi
 from models.employee import auth
 from models.client.urls import router as client_router
 from models.conveyor.urls import router as conveyor_router
+from models.delivery.urls import router as delivery_router
 from models.employee.urls import router as employee_router
 from models.order.urls import router as order_router
 from models.order.urls import ordered_product_router as ordered_product_router
@@ -47,6 +48,7 @@ schema_view = get_schema_view(
 models_router = DefaultRouter()
 models_router.registry.extend(client_router.registry)
 models_router.registry.extend(conveyor_router.registry)
+models_router.registry.extend(delivery_router.registry)
 models_router.registry.extend(employee_router.registry)
 models_router.registry.extend(order_router.registry)
 models_router.registry.extend(product_router.registry)

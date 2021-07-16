@@ -10,6 +10,7 @@ class Order(models.Model):
         PACKAGING = 'Packaging'
         SENT = 'Sent'
         DELIVERED = 'Delivered'
+        CANCELLED = 'Cancelled'
 
     order_date = models.DateField(auto_now=True)
     max_deliver_date = models.DateField(auto_now_add=False)
