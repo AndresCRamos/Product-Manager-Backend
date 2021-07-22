@@ -10,7 +10,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from app.token_management import is_token_expired
 from .models import Employee
-from .serializers import EmployeeSerializer, LoginSerializer
+from .serializers import EmployeeSerializer
 
 
 @permission_classes([AllowAny])

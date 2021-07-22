@@ -30,6 +30,7 @@ class DeliveryListSerializer(serializers.ModelSerializer):
             'zone': conveyor.zone.name
         }
 
+
 class DeliveryDetailSerializer(serializers.ModelSerializer):
     order = OrderDetailSerializer(read_only=True)
     conveyor = ConveyorListSerializer(read_only=True)
@@ -40,3 +41,7 @@ class DeliveryDetailSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class DeliveryUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Delivery
+        exclude = ('order', 'id')

@@ -39,7 +39,7 @@ class ExpiringTokenAuthentication(TokenAuthentication):
         is_expired, token = self.token_expire_handler(token)
 
 
-        if is_expired:
-            raise AuthenticationFailed("The Token is expired")
+        '''if is_expired:
+            raise AuthenticationFailed("The Token is expired")'''
 
         return token.user, token

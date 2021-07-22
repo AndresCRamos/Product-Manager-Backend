@@ -21,3 +21,11 @@ class EmployeeSerializer(serializers.ModelSerializer):
         user.set_password(password)
         user.save()
         return user
+
+
+class EmployeeListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Employee
+        fields = (
+            'id_card', 'email', 'first_name', 'last_name', 'type'
+        )
