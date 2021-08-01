@@ -1,9 +1,11 @@
 from rest_framework import status
 from django.shortcuts import render
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 from .serializers import DeliverySerializer, DeliveryDetailSerializer, DeliveryListSerializer, DeliveryUpdateSerializer
-from ..order.serializers import OrderSerializer
+from ..canceled_order.serializers import CanceledOrderSerializer, CanceledOrderDetailSerializer
+from ..order.serializers import OrderSerializer, OrderedProductSerializer
 
 
 class DeliveryViewSet(ModelViewSet):
@@ -46,3 +48,25 @@ class DeliveryViewSet(ModelViewSet):
     def partial_update(self, request, *args, **kwargs):
         self.kwargs['partial'] = True
         return self.update(request, *args, **kwargs)
+
+    def destroy(self, request, *args, **kwargs):
+        reason = request.data.get('reason', 'No especified')
+        instance = self.get_object()
+        order = instance.order
+        data = {
+            'reason': reason,
+            'order': order.id
+        }
+        serializer = CanceledOrderSerializer(data=data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer.save()
+        order.state = 'Cancelled'
+        order.save()
+        ordered = OrderedProductSerializer.Meta.model.objects.filter(order=order)
+        for ordered_product in ordered:
+            product = ordered_product.product
+            product.quantity += ordered_product.quantity
+            product.save()
+        instance.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
