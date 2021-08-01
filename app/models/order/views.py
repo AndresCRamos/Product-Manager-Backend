@@ -1,5 +1,3 @@
-from itertools import product
-
 from rest_framework import status
 from django.shortcuts import render
 from rest_framework.decorators import action
@@ -11,6 +9,8 @@ from .serializers import \
      OrderedProductSerializer, OrderedProductListSerializer, OrderedProductDetailSerializer,
      OrderedProductUpdateSerializer, OrderCreateSerializer
      )
+from ..canceled_order.serializers import CanceledOrderSerializer
+from ..delivery.models import Delivery
 
 
 class OrderViewSet(ModelViewSet):
@@ -24,6 +24,28 @@ class OrderViewSet(ModelViewSet):
         if self.action in 'create':
             return OrderCreateSerializer
         return OrderSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        order = self.get_object()
+        order : OrderSerializer.Meta.model
+        data = {
+            'order': order.id,
+            'reason': request.data.get('reason', 'No especified')
+        }
+        serializer = CanceledOrderSerializer(data=data)
+        if serializer.is_valid():
+            delivery = Delivery.objects.filter(order=order).first()
+            if delivery:
+                delivery.delete()
+            for ordered in OrderedProductSerializer.Meta.model.objects.filter(order=order):
+                product = ordered.product
+                product.quantity += ordered.quantity
+                product.save()
+            serializer.save()
+            order.state = 'Cancelled'
+            order.save()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(serializer.errors)
 
 
 class OrderedProductViewSet(ModelViewSet):
@@ -41,6 +63,7 @@ class OrderedProductViewSet(ModelViewSet):
         return OrderedProductDetailSerializer.Meta.model.objects.filter(order=order)
 
     def get_serializer_class(self):
+        print(self.action)
         if self.action == 'retrieve':
             return OrderedProductDetailSerializer
         if self.action == 'list':
@@ -59,4 +82,5 @@ class OrderedProductViewSet(ModelViewSet):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        return Response(serializer.errors)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
