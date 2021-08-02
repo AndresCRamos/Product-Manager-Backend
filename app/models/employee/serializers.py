@@ -29,3 +29,9 @@ class EmployeeListSerializer(serializers.ModelSerializer):
         fields = (
             'id_card', 'email', 'first_name', 'last_name', 'type'
         )
+
+
+class LoginSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Employee
+        fields = ('email', 'password')

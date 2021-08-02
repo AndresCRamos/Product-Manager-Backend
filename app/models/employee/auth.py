@@ -3,6 +3,7 @@ from django.contrib.sessions.models import Session
 from django.contrib.auth.hashers import check_password
 from rest_framework import status
 from rest_framework.authtoken.models import Token
+from rest_framework.exceptions import APIException, AuthenticationFailed
 from rest_framework.decorators import permission_classes, authentication_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from app.token_management import ExpiringTokenAuthentication
@@ -10,69 +11,58 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from app.token_management import is_token_expired
 from .models import Employee
-from .serializers import EmployeeSerializer
+from .serializers import EmployeeSerializer, LoginSerializer
 
 
 @permission_classes([AllowAny])
 class Login(APIView):
     def post(self, request, *args, **kwargs):
-        login_serializer = LoginSerializer(data=request.data)
-        if login_serializer.is_valid():
-            email = login_serializer.data['email']
-            password = login_serializer.data['password']
-            try:
-                user = Employee.objects.get(email=email)
-            except Employee.DoesNotExist:
-                return Response(
-                    {'error': 'No user which such email'},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
-            if user:
-                pass_valid = check_password(password, user.password)
-                if not pass_valid:
+        email = request.data.get('email')
+        password = request.data.get('password')
+        if email is None:
+            raise AuthenticationFailed('email was not provided')
+        if password is None:
+            raise AuthenticationFailed('password was not provided')
+        try:
+            user = Employee.objects.get(email=email)
+        except Employee.DoesNotExist:
+            raise AuthenticationFailed('not user with such email')
+        if user:
+            pass_valid = check_password(password, user.password)
+            if not pass_valid:
+                raise AuthenticationFailed('incorrect password')
+            if user.is_active:
+                token, created = Token.objects.get_or_create(user=user)
+                employee = user
+                employee_serializer = EmployeeSerializer(employee)
+                if created:
                     return Response(
-                        {'error': 'Incorrect password'},
-                        status=status.HTTP_400_BAD_REQUEST
+                        {
+                            'token': token.key,
+                            'employee': employee_serializer.data,
+                            'message': 'Token created'
+                        },
+                        status=status.HTTP_201_CREATED
                     )
-                if user.is_active:
-                    token, created = Token.objects.get_or_create(user=user)
-                    employee = user
-                    employee_serializer = EmployeeSerializer(employee)
-                    if created:
-                        return Response(
-                            {
-                                'token': token.key,
-                                'employee': employee_serializer.data,
-                                'message': 'Token created'
-                            },
-                            status=status.HTTP_201_CREATED
-                        )
-                    else:
-                        token.delete()
-                        all_sessions = Session.objects.filter(expire_date__gte=datetime.now())
-                        if all_sessions.exists():
-                            for session in all_sessions:
-                                session_data = session.get_decoded()
-                                if user.id_card == int(session_data.get('_auth_user_id')):
-                                    session.delete()
-                        token = Token.objects.create(user=user)
-                        return Response(
-                            {
-                                'token': token.key,
-                                'employee': employee_serializer.data,
-                                'message': 'All sessions closed'
-                            },
-                            status=status.HTTP_201_CREATED
-                        )
-                return Response(
-                    {'message': "User isn't active"},
-                    status=status.HTTP_409_CONFLICT
-                )
-            return Response(
-                {'error': 'No user which such email'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        return Response(login_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                else:
+                    token.delete()
+                    all_sessions = Session.objects.filter(expire_date__gte=datetime.now())
+                    if all_sessions.exists():
+                        for session in all_sessions:
+                            session_data = session.get_decoded()
+                            if user.id_card == int(session_data.get('_auth_user_id')):
+                                session.delete()
+                    token = Token.objects.create(user=user)
+                    return Response(
+                        {
+                            'token': token.key,
+                            'employee': employee_serializer.data,
+                            'message': 'All sessions closed'
+                        },
+                        status=status.HTTP_201_CREATED
+                    )
+            raise AuthenticationFailed('user isnt active')
+        raise AuthenticationFailed('not user with such email')
 
 
 @permission_classes([IsAuthenticated])
