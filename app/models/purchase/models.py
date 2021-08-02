@@ -9,13 +9,21 @@ class Purchase(models.Model):
         NOW = 'Immediate'
         CREDIT = 'Credit'
 
+    class StatusType(models.TextChoices):
+        WAIT = 'Waiting'
+        RECIEVED = 'Recieved'
+
     buy_date = models.DateField(auto_now=True, auto_now_add=False)
     deliver_date = models.DateField(default=None, blank=True, null=True)
-    value = models.DecimalField(decimal_places=2, max_digits=10)
     payment_type = models.CharField(
         max_length=10,
         choices=PaymentType.choices,
         default=PaymentType.NOW
+    )
+    status = models.CharField(
+        max_length=10,
+        choices=StatusType.choices,
+        default=StatusType.WAIT
     )
     supplier = models.ForeignKey(Supplier, on_delete=models.DO_NOTHING)
 

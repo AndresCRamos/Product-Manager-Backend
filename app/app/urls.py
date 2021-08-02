@@ -20,13 +20,14 @@ from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 from models.employee import auth
+from models.canceled_order.urls import router as canceled_order_router
 from models.client.urls import router as client_router
 from models.conveyor.urls import router as conveyor_router
 from models.delivery.urls import router as delivery_router
 from models.employee.urls import router as employee_router
-from models.order.urls import router as order_router
-from models.order.urls import ordered_product_router as ordered_product_router
+from models.order.urls import router as order_router, ordered_product_router
 from models.product.urls import router as product_router
+from models.purchase.urls import router as purchase_router, purchased_product_router
 from models.seller.urls import router as seller_router
 from models.supplier.urls import router as supplier_router
 from models.vehicle.urls import router as vehicle_router
@@ -46,11 +47,13 @@ schema_view = get_schema_view(
 )
 
 models_router = DefaultRouter()
+models_router.registry.extend(canceled_order_router.registry)
 models_router.registry.extend(client_router.registry)
 models_router.registry.extend(conveyor_router.registry)
 models_router.registry.extend(delivery_router.registry)
 models_router.registry.extend(employee_router.registry)
 models_router.registry.extend(order_router.registry)
+models_router.registry.extend(purchase_router.registry)
 models_router.registry.extend(product_router.registry)
 models_router.registry.extend(seller_router.registry)
 models_router.registry.extend(supplier_router.registry)
@@ -63,7 +66,8 @@ base_url = [
 
 model_url = [
     path(r'api/v1/', include(models_router.urls)),
-    path(r'api/v1/', include(ordered_product_router.urls))
+    path(r'api/v1/', include(ordered_product_router.urls)),
+    path(r'api/v1/', include(purchased_product_router.urls))
 ]
 
 auth_url = [
